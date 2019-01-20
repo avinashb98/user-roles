@@ -8,6 +8,7 @@ const should = chai.should();
 
 const User = require('../src/models/user');
 const Role = require('../src/models/role');
+const UserRole = require('../src/models/userRole');
 
 chai.use(chaiHttp);
 
@@ -30,7 +31,7 @@ describe('User Roles APIs Testing', () => {
       chai.request(server)
         .post('/api/user')
         .send({
-          userId: 'avinashb98'
+          userId: 'test'
         })
         .end((err, res) => {
           res.should.have.status(201);
@@ -40,7 +41,7 @@ describe('User Roles APIs Testing', () => {
         });
     });
     after(async () => {
-      await User.destroy({ where: { userId: 'avinashb98' }});
+      await User.destroy({ where: { userId: 'test' }});
     })
   });
 
@@ -49,7 +50,7 @@ describe('User Roles APIs Testing', () => {
       chai.request(server)
         .post('/api/role')
         .send({
-          role: 'xyz'
+          role: 'test'
         })
         .end((err, res) => {
           res.should.have.status(201);
@@ -59,7 +60,38 @@ describe('User Roles APIs Testing', () => {
         });
     });
     after(async () => {
-      await Role.destroy({ where: { role: 'xyz' }});
+      await Role.destroy({ where: { role: 'test' }});
+    })
+  });
+
+  describe('Testing for Assigning User Role', () => {
+    before(async () => {
+      await Promise.all([
+        User.create({ userId: 'test' }),
+        Role.create({ role: 'test' })
+      ]);
+    });
+
+    it('it assigns user a new role', (done) => {
+      chai.request(server)
+        .post('/api/user-role/assign')
+        .send({
+          role: 'test',
+          userId: 'test'
+        })
+        .end((err, res) => {
+          res.should.have.status(201);
+          res.body.should.be.a('object');
+          res.body.message.should.be.a('string');
+          done();
+        });
+    });
+    after(async () => {
+      await Promise.all([
+        Role.destroy({ where: { role: 'test' } }),
+        User.destroy({ where: { userId: 'test' } }),
+        UserRole.destroy({ where: { userId: 'test', role: 'test' } })
+      ]);
     })
   });
 
