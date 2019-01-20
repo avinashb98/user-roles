@@ -4,7 +4,7 @@ const Role = require('../../models/role');
 const roleExists = async (role) => {
   let roles;
   try {
-    roles = await Role.findAll({ role });
+    roles = await Role.findAll({ where: { role } });
   } catch (error) {
     throw error;
   }
