@@ -9,6 +9,7 @@ const app = express();
 
 // Routes
 const userRoutes = require('./src/routes/userRoutes');
+const roleRoutes = require('./src/routes/roleRoutes');
 
 // Body Parser Configuration
 app.use(bodyParser.json({ // to support JSON-encoded bodies
@@ -29,5 +30,6 @@ app.get('/api/', (req, res) => {
 
 // Handle User Endpoints
 app.use('/api/user/', userRoutes);
+app.use('/api/role/', roleRoutes);
 
 module.exports = app;
