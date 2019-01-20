@@ -2,13 +2,14 @@ const Joi = require('joi');
 const User = require('../../models/user');
 
 const userWithIdExists = async (userId) => {
-  let user;
+  let users;
   try {
-    user = await User.find({ userId });
+    users = await User.all({ userId });
   } catch (error) {
     throw error;
   }
-  if (user.length > 0) {
+
+  if (users.length > 0) {
     return true;
   }
   return false;
@@ -21,9 +22,8 @@ const ValidateCreate = Joi.object().keys({
 const create = async (req, res, next) => {
   const { error, value } = ValidateCreate.validate(req.body);
   if (error) {
-    console.log(error);
     res.status(400).json({
-      message: 'Invalid User Id'
+      message: `Invalid User Id. ${error.message}`
     });
     return;
   }
