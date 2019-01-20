@@ -23,7 +23,7 @@ app.use(bodyParser.urlencoded({ // to support URL-encoded bodies
 // Router Initialization
 app.get('/api/', (req, res) => {
   res.status(200).json({
-    msg: 'Welcome to User-Roles API'
+    message: 'Welcome to User-Roles API'
   });
 });
 

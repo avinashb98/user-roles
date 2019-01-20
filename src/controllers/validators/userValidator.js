@@ -4,7 +4,7 @@ const User = require('../../models/user');
 const userWithIdExists = async (userId) => {
   let users;
   try {
-    users = await User.all({ userId });
+    users = await User.findAll({ userId });
   } catch (error) {
     throw error;
   }
