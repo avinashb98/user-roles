@@ -1,14 +1,13 @@
 /* eslint-disable */
-
-require('dotenv').config();
 process.env.NODE_ENV = 'test';
-
-const User = require('../src/models/user');
-
+require('dotenv').config();
 const chai = require('chai');
 const chaiHttp = require('chai-http');
 const server = require('../app');
 const should = chai.should();
+
+const User = require('../src/models/user');
+const Role = require('../src/models/role');
 
 chai.use(chaiHttp);
 
@@ -42,6 +41,25 @@ describe('User Roles APIs Testing', () => {
     });
     after(async () => {
       await User.destroy({ where: { userId: 'avinashb98' }});
+    })
+  });
+
+  describe('Testing for Creating Role', () => {
+    it('it creates a new role', (done) => {
+      chai.request(server)
+        .post('/api/role')
+        .send({
+          role: 'xyz'
+        })
+        .end((err, res) => {
+          res.should.have.status(201);
+          res.body.should.be.a('object');
+          res.body.message.should.eql('Role Successfully Created');
+          done();
+        });
+    });
+    after(async () => {
+      await Role.destroy({ where: { role: 'xyz' }});
     })
   });
 
