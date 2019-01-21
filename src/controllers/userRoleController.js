@@ -3,8 +3,20 @@ const User = require('../models/user');
 
 const assignRole = async (req, res) => {
   const { userId, role } = req.body;
+  let roles;
+  if (!Array.isArray(role)) {
+    roles = [role];
+  } else {
+    roles = role;
+  }
+
+  const creations = [];
+  roles.forEach((userRole) => {
+    creations.push(UserRole.create({ userId, role: userRole }));
+  });
+
   try {
-    await UserRole.create({ userId, role });
+    await Promise.all(creations);
   } catch (error) {
     res.status(500).json({
       message: 'Internal Server Error',
@@ -14,13 +26,14 @@ const assignRole = async (req, res) => {
   }
 
   res.status(201).json({
-    message: `Role ${role} assigned to User ${userId} successfully`,
+    message: `Role(s) assigned to User ${userId} successfully`,
     data: { userId, role }
   });
 };
 
 const usersByRole = async (req, res) => {
   const { role } = req.body;
+  console.log(role);
   let rawUserIds;
   try {
     rawUserIds = await UserRole.findAll({ where: { role } });
@@ -31,6 +44,8 @@ const usersByRole = async (req, res) => {
     });
     return;
   }
+
+  console.log(rawUserIds);
 
   if (rawUserIds.length === 0) {
     res.status(404).json({
@@ -63,7 +78,38 @@ const usersByRole = async (req, res) => {
   });
 };
 
+const removeRole = async (req, res) => {
+  const { userId, role } = req.body;
+  let roles;
+  if (!Array.isArray(role)) {
+    roles = [role];
+  } else {
+    roles = role;
+  }
+
+  const deletions = [];
+  roles.forEach((userRole) => {
+    deletions.push(UserRole.destroy({ where: { userId, role: userRole } }));
+  });
+
+  try {
+    await Promise.all(deletions);
+  } catch (error) {
+    res.status(500).json({
+      message: 'Internal Server Error',
+      data: {}
+    });
+    return;
+  }
+
+  res.status(201).json({
+    message: `Role(s) assigned to User ${userId} have been successfully removed`,
+    data: {}
+  });
+};
+
 module.exports = {
   assignRole,
-  usersByRole
+  usersByRole,
+  removeRole
 };

@@ -6,5 +6,6 @@ const router = express.Router();
 
 router.post('/assign', validate.assignRole, userRoleController.assignRole);
 router.get('/users-by-role', userRoleController.usersByRole);
+router.delete('/remove-role', validate.removeRole, userRoleController.removeRole);
 
 module.exports = router;
