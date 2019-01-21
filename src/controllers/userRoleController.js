@@ -33,7 +33,6 @@ const assignRole = async (req, res) => {
 
 const usersByRole = async (req, res) => {
   const { role } = req.body;
-  console.log(role);
   let rawUserIds;
   try {
     rawUserIds = await UserRole.findAll({ where: { role } });
@@ -44,8 +43,6 @@ const usersByRole = async (req, res) => {
     });
     return;
   }
-
-  console.log(rawUserIds);
 
   if (rawUserIds.length === 0) {
     res.status(404).json({
